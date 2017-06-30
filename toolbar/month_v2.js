@@ -31,11 +31,7 @@ $('#back__ID').on('click',function(event){
 var _mlist=$vm.module_list;
 var _mobj=$vm.vm['__ID'];
 var _sys='';
-var _input='';
 var _ids='';
-if(_mobj.op!=undefined){
-	_input=_mobj.op;
-}
 //-----------------------------------------------
 if(_mobj.op!=undefined && _mobj.op.sys!=undefined){
 	_sys=_mobj.op.sys;

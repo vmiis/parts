@@ -932,8 +932,10 @@ var _mlist=$vm.module_list;
 var _mobj=$vm.vm['__ID'];
 var _sys='';
 var _config='';
+var _ids='';
 if(_mobj.op!=undefined && _mobj.op.sys!=undefined){
 	_sys=_mobj.op.sys;
 	_config=_sys.config;
+	_ids=_sys.config.module_ids;
 }
 //-----------------------------------------------
