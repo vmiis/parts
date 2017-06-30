@@ -31,6 +31,7 @@ var _record_type='';
 var _app_id;
 var _row_data;
 var _custom_field_process='';
+var _json=1;
 //---------------------------------------------
 var _init=function(){
     $('#save__ID').css('background','');
@@ -62,6 +63,8 @@ var _init=function(){
     _app_id=$vm.vm['__ID'].op.app_id;
     _record_type=$vm.vm['__ID'].op.record_type;
     _row_data=$vm.vm['__ID'].op.row_data;
+    _json=1;
+    if($vm.vm['__ID'].op.json==0) _json=0;
     $('#F__ID')[0].reset();
 
     $('#save__ID').show(); $('#delete__ID').show();
@@ -103,6 +106,7 @@ var _build_form=function(){
         }
     }
     $('#tb__ID tbody').html(txt);
+    $('#D__ID').css('min-height',$vm.min_height+'px');
     //--------------------------------------------
 }
 //---------------------------------------------
@@ -133,7 +137,6 @@ var _field_process=function(){
                 //cell_value=$('<div/>').html(cell_value).text();
                 cell_value=$('<div/>').text(cell_value).html();
                 cell_value=cell_value.replace(/\n/g,'<br>');
-
                 if($vm.edge==0) $(this).html(cell_value);
                 else if($vm.edge==1) $(this).find('div:first').html(cell_value);
 
@@ -161,7 +164,7 @@ var _field_process=function(){
         var data_id=$(this).attr('data-id');
         if(data_id!==undefined){
             var value=$(this).html().replace(/<div>/g,'').replace(/<\/div>/g,'\n').replace(/<br>/g,'\n');
-            value=$('<div/>').html(value).text();
+            var value=$('<div/>').html(value).text();
             //value=$('<div/>').text(value).html();
             if(_before_change!=="") _before_change(_records,I,data_id,$(this),_set_value,'form');
             if(_cell_value_process!=="") value=_cell_value_process(value,data_id);
@@ -220,6 +223,10 @@ var _dbv;
 $('#save2__ID').on('click', function(){ $('#save__ID').triggerHandler('click'); })
 //---------------------------------------------
 $('#save__ID').on('click', function(){
+    save();
+})
+//-------------------------------------
+var save=function(){
     $("#save__ID").css('display','none'); //hide save button prevent from save again
     $("#save2__ID").css('display','none'); //hide save button prevent from save again
     var record=_records[I];
@@ -243,7 +250,7 @@ $('#save__ID').on('click', function(){
         if(rid===null || rid===undefined) _record_add(I);
         else _record_modify(I);
     }
-})
+}
 //-------------------------------------
 $('#delete__ID').on('click', function(){
     var rid=_records[I].ID;
@@ -266,12 +273,12 @@ var _record_delete=function(I,rid){
         }
     }
     if(_record_type=='s2') $vm.delete_record_s2(options);
-    else $vm.delete_record(options);
+	else $vm.delete_record(options);
 };
 //-------------------------------------
 var _record_add=function(I){
     var tr=$('#tb__ID');
-    var options={ pid:'__ID', records:_records, row_data:_row_data(I), I:I, dbv:_dbv,tr:tr,
+    var options={ json:_json,pid:'__ID', records:_records, row_data:_row_data(I), I:I, dbv:_dbv,tr:tr,
         callback:function(res,n){
             if(_after_submit_form!=='')  _after_submit_form(I,res,n,_dbv);
             if(_after_submit!=='')  _after_submit(I,res,n,_dbv);
@@ -281,12 +288,12 @@ var _record_add=function(I){
     }
     if(_record_type=='add_record_without_permission') $vm.add_record_without_permission(options);
     else if(_record_type=='s2') $vm.add_record_s2(options);
-    else $vm.grid_add_record(options);
+	else $vm.grid_add_record(options);
 };
 //---------------------------------------------
 var _record_modify=function(I){
     var tr=$('#tb__ID');
-    var options={ pid:'__ID', records:_records, row_data:_row_data(I), I:I, dbv:_dbv,tr:tr,
+    var options={ json:_json,pid:'__ID', records:_records, row_data:_row_data(I), I:I, dbv:_dbv,tr:tr,
         callback:function(res,n){
             if(_after_submit_form!=='')  _after_submit_form(I,res,n,_dbv);
             if(_after_submit!=='')  _after_submit(I,res,n,_dbv);
@@ -295,7 +302,7 @@ var _record_modify=function(I){
         }
     }
     if(_record_type=='s2') $vm.modify_record_s2(options);
-    else $vm.grid_modify_record(options);
+	else $vm.grid_modify_record(options);
 };
 //---------------------------------------------
 var _set_value=function(value,records,I,column_name){
@@ -312,12 +319,9 @@ $('#back__ID').on('click',function(event){
     $vm.back({div:'__ID',form:1});
 });
 //---------------------------------------------
-var _mlist=$vm.module_list;
 var _mobj=$vm.vm['__ID'];
 var _sys='';
-var _config='';
 if(_mobj.op!=undefined && _mobj.op.sys!=undefined){
 	_sys=_mobj.op.sys;
-	_config=_sys.config;
 }
 //-----------------------------------------------

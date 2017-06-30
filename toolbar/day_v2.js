@@ -22,3 +22,18 @@ $('#back__ID').on('click',function(event){
       $vm.back({div:'__ID'});
 });
 //---------------------------------------------
+var _mlist=$vm.module_list;
+var _mobj=$vm.vm['__ID'];
+var _sys='';
+var _input='';
+var _ids='';
+if(_mobj.op!=undefined){
+	_input=_mobj.op;
+}
+//-----------------------------------------------
+if(_mobj.op!=undefined && _mobj.op.sys!=undefined){
+	_sys=_mobj.op.sys;
+	_ids=_sys.config.module_ids;
+}
+var _module=$vm.module_list[$vm.vm['__ID'].name];
+//-----------------------------------------------

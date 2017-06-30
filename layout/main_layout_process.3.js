@@ -82,8 +82,16 @@ var load_module=function(name){
 					alert("Error in app config file\n"+e);
 					return;
 				}
-				var panel_url=config.panels.main_panel.url;
-				var panel_name=config.panels.main_panel.name;
+				var panel_url="";
+				var panel_name="";
+				if(config.panel!==undefined){
+					panel_url=config.panel.url;
+					panel_name=config.panel.name;
+				}
+				else if(config.panels!==undefined){
+					panel_url=config.panels.main_panel.url;
+					panel_name=config.panels.main_panel.name;
+				}
 				//---------------------------
 				var module="L_0_"+name;
 				if($vm.module_list[module]==undefined){
@@ -94,7 +102,7 @@ var load_module=function(name){
 				}
 				//---------------------------
 				$vm.load_module_by_name(module,$vm.root_layout_content_slot,{
-					name:name,
+					name:panel_name,
 					mobj:$vm.vm['__ID'],
 					record:{UID:0},
 					panel:'main_panel',

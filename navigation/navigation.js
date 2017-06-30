@@ -327,6 +327,15 @@ $('#counting__ID').on('click',function(){
     })
 })
 //---------------------------------------------
+var _clear_counting=function(){
+	$('.nav__ID li').each(function(){
+		var txt=$(this).attr('data-li_text');
+		if(txt!=undefined){
+			$(this).text(txt);
+		}
+    })
+}
+//---------------------------------------------
 var _development_mark=function(){
     if($vm.server=='development'){
         $('.nav__ID li').each(function(){

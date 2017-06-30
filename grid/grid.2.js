@@ -48,7 +48,8 @@ var _N_total=0;
 var _dbv={};
 var _cell_value_process="";
 var _grid_to_form_parameters={};
-var _json='';
+var _json=1;
+var _new_process="";
 //---------------------------------------------------------------
 if($vm.server=='production') $('#how__ID').hide();
 //---------------------------------------------------------------
@@ -107,15 +108,13 @@ var _set_req=function(){
     var sql="with tb as (select Information,ID,UID,PUID,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"-@S1] )";
     sql+="select Information,ID,UID,PUID,DateTime,Author,RowNum from tb where RowNum between @I6 and @I7";
     var sql_n="select count(ID) from [TABLE-"+_db_pid+"-@S1]";
-    _req={cmd:'query_records',db_pid:_db_pid,sql:sql,sql_n:sql_n,s1:'"'+$('#keyword__ID').val()+'"',I:$('#I__ID').text(),page_size:$('#page_size__ID').val()}
+	_req={cmd:'query_records',db_pid:_db_pid,sql:sql,sql_n:sql_n,s1:'"'+$('#keyword__ID').val()+'"',I:$('#I__ID').text(),page_size:$('#page_size__ID').val()}
 }
 //-------------------------------------
-var _set_req_export=function(){
-    var sql="with tb as (select Information,ID,UID,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"] )";
-    sql+="select Information,ID,UID,DateTime,Author,RowNum from tb";
-    _set_from_to();
-    if(_from!='0' && _to!='0') sql+=" where RowNum between @I6 and @I7";
-    _req={cmd:'query_records',sql:sql,i6:_from,i7:_to}
+var _set_req_export=function(i1,i2){
+    var sql="with tb as (select Information,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"-@S1] )";
+    sql+="select Information,DateTime,Author from tb where RowNum between @I1 and @I2";
+	_req={cmd:'query_records',sql:sql,i1:i1,i2:i2};
 }
 //-----------------------------------------------
 var _sql_export="with tb as (select Information,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"-@S1] )";
@@ -232,17 +231,9 @@ var _render=function(I){
                 var b=_headerB[j];
                 var value="";
                 if(_records[i][b]!==undefined) value=_records[i][b];
-                /*old ok
-                //var value=$('<div/>').text(value).html();
-                //value=value.replace(/\r/g,'\n').replace(/\n\n/g,'\n').replace(/\n/g,'<br>');
-                */
-
                 value=value.toString();
-                //value=value.replace(/<br>/g,'\n');
-                //value=$('<div/>').html(value).text();
                 value=$('<div/>').text(value).html();
                 value=value.replace(/\n/g,'<br>');
-
                 var print='';
                 if(_headerA[j][0]=='_') print='class=c_print';
                 if($vm.edge==0) txt+="<td data-id="+b+" "+print+" contenteditable>"+value+"</td>";
@@ -271,12 +262,12 @@ var _render=function(I){
                 if(form_module_name===undefined){
                     var name='grid_form__ID';
 					if($vm.module_list[name]==undefined){
-                    	$vm.module_list[name]=[_db_pid.toString(),'__BASE__/vmiis/Common-Code/grid/form.html',''];
+                    	$vm.module_list[name]=[_db_pid.toString(),'__BASE__/vmiis/Common-Code/grid/form2.html',''];
 					}
                     $vm.load_module_by_name(name,$vm.root_layout_content_slot,
                         {
 							//----------------
-							sys:_sys,
+							sys:_mobj.op.sys,
 							mobj:_mobj,
 							record:_records[I],
 							//----------------
@@ -290,6 +281,7 @@ var _render=function(I){
                             app_id:_app_id,
                             record_type:_record_type,
                             row_data:_row_data,
+                            json:_json,
                         }
                     );
                 }
@@ -301,7 +293,7 @@ var _render=function(I){
                     $vm.load_module_by_name(form_module_name,$vm.root_layout_content_slot,
                         {
 							//----------------
-							sys:_sys,
+							sys:_mobj.op.sys,
 							mobj:_mobj,
 							record:_records[I],
 							//----------------
@@ -319,6 +311,7 @@ var _render=function(I){
                             app_id:_app_id,
                             record_type:_record_type,
                             row_data:_row_data,
+                            json:_json,
                         }
                     );
                 }
@@ -456,7 +449,6 @@ var _set_value=function(value,records,I,column_name){
 }
 var _request_data=function(){
     if(_req==='') return;
-    //_set_headers();
     if(_busy_query!=='') $vm.open_dialog({name:'busy_dialog_module'});
     var mt1=new Date().getTime();
     $VmAPI.request({data:_req,callback:function(res){
@@ -468,48 +460,28 @@ var _request_data=function(){
         var tt_server=parseInt(res.elapsed);
         if(tt_all<tt_server) tt_all=tt_server;
         $("#elapsed__ID").text((JSON.stringify(res.records).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
-        //$("#elapsed__ID").text(tt_all.toString()+"/"+tt_server+'ms');
         $('#save__ID').css('background','');
         _records=res.records;
         _res=res;
+        _json=0;
+        if(_res.json=='1') _json=1;
         if(_data_process!==''){ _data_process(); }
         _render();
-        if(_data_process_after_render!==''){ _data_process_after_render('grid'); }
+		if(_data_process_after_render!==''){ _data_process_after_render('grid'); }
     }})
 }
-var _request_data_export=function(){
-    if(_req==='') return;
-    //_set_headers();
-    if(_busy_query!=='') $vm.open_dialog({name:'busy_dialog_module'});
-    $VmAPI.request({data:_req,callback:function(res){
-        if(_busy_query!=='') $vm.close_dialog({name:'busy_dialog_module'});
-        $("#elapsed__ID").text(res.elapsed+'ms');
-        _records=res.records;
-		_res=res;
-        if(_data_process!==''){ _data_process(); }
-        _export_data(_filename);
-    }})
-}
-//-------------------------------------
-var _export_data=function(file_name){
-    if(_records!==undefined){
-        if(_fields_e==='') _fields_e=_fields.replace('_Form,','').replace(',_Delete','');
-        $vm.download_csv({name:file_name,data:_records,fields:_fields_e});
-    }
-    else alert('No data')
-}
-//---------------------------------------------
 var _export_records=function(){
     var g_I,gLoop,busy,results,gDialog_module_id;
+	//g_I page number, 0 is first page
     var one_loop=function(){
+		//page by page (500ms) to get data and save to results
         if(busy==1) return;
         busy=1;
-        //var sql="with tb as (select Information,RowNum=row_number() over (order by ID DESC) from [TABLE-"+_db_pid+"-@S1] )";
-        //sql+="select Information from tb where RowNum between @I1 and @I2";
         var start=$('#start__ID').val();  if(start==="") start=1;
         var page_size=parseInt($('#page_size__ID').val());
         var i1=1+(start-1+g_I)*page_size,i2=i1+page_size-1;
-        $VmAPI.request({data:{cmd:'query_records',sql:_sql_export,i1:i1.toString(),i2:i2.toString()},callback:function(res){
+        _set_req_export(i1.toString(),i2.toString());
+        $VmAPI.request({data:_req,callback:function(res){
             busy=0;
             $('#export_num'+gDialog_module_id).text("Page "+(g_I+1).toString());
             if(res.records.length!=0){
@@ -550,6 +522,15 @@ var _export_records=function(){
     //-------------------------------------
     start_export();
 }
+//---------------------------------------------
+var _export_current_data=function(file_name){
+    if(_records!==undefined){
+        if(_fields_e==='') _fields_e=_fields.replace('_Form,','').replace(',_Delete','');
+        $vm.download_csv({name:file_name,data:_records,fields:_fields_e});
+    }
+    else alert('No data, query data first');
+}
+//---------------------------------------------
 var _to_true_and_false=function(v){
     if(v==="True") return true;
     else if(v==='1') return true;
@@ -592,7 +573,11 @@ var _record_add=function(I){
         }
     }
     if(_record_type=='s2') $vm.add_record_s2(options);
-    else $vm.grid_add_record(options);
+    else{
+		$vm.grid_add_record(options);
+		//if($vm.third_party!=1)	$vm.grid_add_record(options);
+		//else if($vm.third_party==1)	$vm.grid_add_record_third(options);
+	}
 };
 var _record_modefy=function(I){
     var tr=$('#grid__ID'+' tr:nth-child('+(I+2)+')');
@@ -607,7 +592,11 @@ var _record_modefy=function(I){
         }
     }
     if(_record_type=='s2') $vm.modify_record_s2(options);
-    else $vm.grid_modify_record(options);
+	else{
+		$vm.grid_modify_record(options);
+		//if($vm.third_party!=1)	$vm.grid_modify_record(options);
+		//else if($vm.third_party==1)	$vm.grid_modify_record_third(options);
+	}
 };
 var _record_delete=function(I,rid){
     if(rid===undefined){
@@ -625,7 +614,11 @@ var _record_delete=function(I,rid){
         }
     }
     if(_record_type=='s2') $vm.delete_record_s2(options);
-    else $vm.delete_record(options);
+	else{
+		$vm.delete_record(options);
+		//if($vm.third_party!=1)	$vm.delete_record(options);
+		//else if($vm.third_party==1)	$vm.delete_record_third(options);
+	}
 };
 var _row_data=function(I){
     var data={};
@@ -771,12 +764,7 @@ if(document.getElementById('import_f__ID')!==null) document.getElementById('impo
 //-------------------------------------
 $('#search__ID').on('click',function(){   _set_req(); _request_data(); })
 $('#query__ID').on('click',function(){    _set_req(); _request_data(); })
-$('#Export__ID').on('click',function(){   _set_from_to(); if(_set_req_export==='') _set_req_export=_set_req; _set_req_export();  _request_data_export();  })
-$('#export__ID').on('click',function(){
-    _set_from_to();
-    if(_set_req_export==='') _set_req_export=_set_req; _set_req_export();  _request_data_export();
-    //_export_records();
-})
+$('#export__ID').on('click',function(){   _export_records(); })
 $('#import__ID').on('click',function(){
     $('#import_f__ID').val('');
     $('#import_f__ID').trigger('click');
@@ -796,6 +784,9 @@ $('#back__ID').on('click',function(event){
 });
 //---------------------------------------------
 $('#new__ID').on('click', function(){
+    if(_new_process!=""){
+        if(_new_process()==false) return;
+    }
     var new_records;
     var new_row={}
     for(var i=0;i<_headerB.length;i++){
@@ -830,7 +821,7 @@ $('#save__ID').on('click', function(){ //ADD and MODIFY entry point
         for (p in _records[i].vm_valid) {
             if(_records[i].vm_valid[p]===0) valid=0;
         }
-        if((_records[i].ID===null || _records[i].ID===undefined) && _records[i].vm_dirty==1 && valid==1 ){
+        if((_records[i].ID===null || _records[i].ID===undefined || _records[i].ID==='') && _records[i].vm_dirty==1 && valid==1 ){
             if(_before_submit!==''){
                 _dbv={};
                 var r=_before_submit(_records[i],_dbv);
@@ -843,7 +834,7 @@ $('#save__ID').on('click', function(){ //ADD and MODIFY entry point
                 _record_add(i);
             }
         }
-        else if(_records[i].ID!==null && _records[i].ID!==undefined && _records[i].vm_dirty==1 && valid==1 ){
+        else if(_records[i].ID!==null && _records[i].ID!==undefined && _records[i].ID!=='' && _records[i].vm_dirty==1 && valid==1 ){
             if(_before_submit!==''){
                 _dbv={};
                 var r=_before_submit(_records[i],_dbv);
@@ -870,12 +861,38 @@ $('#D__ID').on('refresh_back',function(){
 //-----------------------------------------------
 $('#D__ID').on('load_form_module',function(event,trigger_parameters){
     var this_module_name=$vm.vm['__ID'].name;
-    var other_module_name=$vm.module_list[this_module_name]['form_module'];
-    if(other_module_name!=undefined){
-        $vm.load_module_by_name(other_module_name,$vm.root_layout_content_slot,
-            {
+    var form_module_name=$vm.module_list[this_module_name]['form_module'];
+	if(form_module_name===undefined){
+		var name='grid_form__ID';
+		if($vm.module_list[name]==undefined){
+			$vm.module_list[name]=[_db_pid.toString(),'__BASE__/vmiis/Common-Code/grid/form.html',''];
+		}
+		$vm.load_module_by_name(name,$vm.root_layout_content_slot,
+			{
 				//----------------
 				sys:_sys,
+				mobj:_mobj,
+				record:_records[0],
+				//----------------
+				records:_records,res:_res,I:0,
+				headerA:_headerFormA,headerB:_headerFormB,cell_render:_cell_render,widthA:_widthA,widthB:_widthB,min_widthA:_min_widthA,min_widthB:_min_widthB,
+				before_submit:_before_submit,
+				after_submit:_after_submit,
+				after_change:_after_change,
+				before_change:_before_change,
+				cell_value_process:_cell_value_process,
+				save_style:$('#save__ID').css('display'),
+				app_id:_app_id,
+				record_type:_record_type,
+				row_data:_row_data,
+			}
+		);
+	}
+    else if(form_module_name!=undefined){
+        $vm.load_module_by_name(form_module_name,$vm.root_layout_content_slot,
+            {
+				//----------------
+				sys:_mobj.op.sys,
 				mobj:_mobj,
 				record:_records[0],
 				//----------------
@@ -895,37 +912,61 @@ $('#D__ID').on('load_form_module',function(event,trigger_parameters){
             }
         );
     }
+	/*
     else{
         alert('Can not find form module for "'+this_module_name+'" in the module list');
     }
+	*/
 })
 //-----------------------------------------------
 $('#D__ID').on('load_quest_form_module',function(event,trigger_parameters){
-    var name='grid_form_quest';
-    $vm.module_list[name]={table_id:_db_pid.toString(),url:'__BASE__/vmiis/Common-Code/grid/form_quest.html'};
-    $vm.load_module_by_name(name,$vm.root_layout_content_slot,
-        {
-			//----------------
-			sys:_sys,
-			mobj:_mobj,
-			record:_records[I],
-			//----------------
-			records:_records,res:_res,I:0,
-            headerA:_headerFormA,headerB:_headerFormB,
-            cell_render:_cell_render,
-            widthA:_widthA,widthB:_widthB,min_widthA:_min_widthA,min_widthB:_min_widthB,
-            before_submit:_before_submit,
-            after_submit:_after_submit,
-            after_change:_after_change,
-            before_change:_before_change,
-            cell_value_process:_cell_value_process,
-            save_style:$('#save__ID').css('display'),
-            app_id:_app_id,
-            record_type:_record_type,
-            row_data:_row_data,
-            trigger_parameters:trigger_parameters,
-        }
-    );
+	var this_module_name=$vm.vm['__ID'].name;
+    var form_module_name=$vm.module_list[this_module_name]['form_module'];
+	if(form_module_name===undefined){
+	    var name='grid_form_quest';
+	    $vm.module_list[name]={table_id:_db_pid.toString(),url:'__BASE__/vmiis/Common-Code/grid/form_quest.html'};
+	    $vm.load_module_by_name(name,$vm.root_layout_content_slot,
+	        {   records:_records,res:_res,I:0,
+	            headerA:_headerFormA,headerB:_headerFormB,
+	            cell_render:_cell_render,
+	            widthA:_widthA,widthB:_widthB,min_widthA:_min_widthA,min_widthB:_min_widthB,
+	            before_submit:_before_submit,
+	            after_submit:_after_submit,
+	            after_change:_after_change,
+	            before_change:_before_change,
+	            cell_value_process:_cell_value_process,
+	            save_style:$('#save__ID').css('display'),
+	            app_id:_app_id,
+	            record_type:_record_type,
+	            row_data:_row_data,
+	            trigger_parameters:trigger_parameters,
+	        }
+	    );
+	}
+	else{
+		$vm.load_module_by_name(form_module_name,$vm.root_layout_content_slot,
+            {
+				//----------------
+				sys:_mobj.op.sys,
+				mobj:_mobj,
+				record:_records[0],
+				//----------------
+				records:_records,I:0,
+                headerA:_headerA,headerFormB:_headerFormB,
+                cell_render:_cell_render,
+                before_submit:_before_submit,
+                after_submit:_after_submit,
+                after_change:_after_change,
+                before_change:_before_change,
+                cell_value_process:_cell_value_process,
+                from_grid:'0',
+                grid_to_form_parameters:_grid_to_form_parameters,
+                trigger_parameters:trigger_parameters,
+                record_type:_record_type,
+                row_data:_row_data,
+            }
+        );
+	}
 })
 //-----------------------------------------------
 var _mlist=$vm.module_list;
