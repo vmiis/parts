@@ -73,7 +73,7 @@ var load_module=function(name){
 			var url=$vm.app_config.panels[name].config_url;
 			url+='?_v='+$vm.version+$vm.reload;
 			url=$vm.url(url);
-			console.log('loding '+url)
+			console.log('loading '+url)
 			$.get(url,function(txt){
 				//here is control panel json text
 				var text=$('<div/>').html(txt).text();
@@ -105,7 +105,7 @@ var load_module=function(name){
 					}
 				}
 				//---------------------------
-				console.log('loding panel '+panel_url)
+				//console.log('loding panel '+panel_url)
 				$vm.load_module_by_name(module,$vm.root_layout_content_slot,{
 					name:panel_name,
 					mobj:$vm.vm['__ID'],
