@@ -85,8 +85,8 @@ var load_module=function(name){
 				var panel_url="";
 				var panel_name="";
 				if(config.panel!==undefined){
-					panel_url=config.url;
-					panel_name=config.name;
+					panel_url=config.panel.url;
+					panel_name=config.panel.name;
 				}
 				else if(config.panels!==undefined){
 					panel_url=config.panels.main_panel.url;
