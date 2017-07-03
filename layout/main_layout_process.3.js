@@ -42,6 +42,7 @@ $('#nav__ID li').on('click',function(event){
 var load_module=function(name){
 	if($vm.config_list[name]==undefined){
 		if($vm.app_config.modules[name]!=undefined && $vm.app_config.modules[name].url!=undefined){
+			//this is for modules
 			var url=$vm.app_config.modules[name].url;
 			url+='?_v='+$vm.version+$vm.reload;
 			url=$vm.url(url);
@@ -68,10 +69,13 @@ var load_module=function(name){
 			$vm.config_list[name]=$vm.module_list[module].id;
 		}
 		else if($vm.app_config.panels[name].config_url!=undefined){
+			//this is for panels
 			var url=$vm.app_config.panels[name].config_url;
 			url+='?_v='+$vm.version+$vm.reload;
 			url=$vm.url(url);
+			console.log('loding '+url)
 			$.get(url,function(txt){
+				//here is control panel json text
 				var text=$('<div/>').html(txt).text();
 				//---------------------------
 				var config;
@@ -85,8 +89,8 @@ var load_module=function(name){
 				var panel_url="";
 				var panel_name="";
 				if(config.panel!==undefined){
-					panel_url=config.panel.url;
-					panel_name=config.panel.name;
+					panel_url=config.url;
+					panel_name=config.name;
 				}
 				else if(config.panels!==undefined){
 					panel_url=config.panels.main_panel.url;
@@ -101,6 +105,7 @@ var load_module=function(name){
 					}
 				}
 				//---------------------------
+				console.log('loding panel '+panel_url)
 				$vm.load_module_by_name(module,$vm.root_layout_content_slot,{
 					name:panel_name,
 					mobj:$vm.vm['__ID'],
