@@ -319,9 +319,18 @@ $('#back__ID').on('click',function(event){
     $vm.back({div:'__ID',form:1});
 });
 //---------------------------------------------
+var _mlist=$vm.module_list;
 var _mobj=$vm.vm['__ID'];
 var _sys='';
+var _config='';
+var _ids='';
 if(_mobj.op!=undefined && _mobj.op.sys!=undefined){
 	_sys=_mobj.op.sys;
+	if(_sys.config!=undefined){
+		_config=_sys.config;
+		if(_config.module_ids!=undefined){
+			_ids=_config.module_ids;
+		}
+	}
 }
 //-----------------------------------------------
