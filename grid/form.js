@@ -319,7 +319,11 @@ var _config='';
 var _ids='';
 if(_mobj.op!=undefined && _mobj.op.sys!=undefined){
 	_sys=_mobj.op.sys;
-	_config=_sys.config;
-	_ids=_sys.config.module_ids;
+	if(_sys.config!=undefined){
+		_config=_sys.config;
+		if(_config.module_ids!=undefined){
+			_ids=_config.module_ids;
+		}
+	}
 }
 //-----------------------------------------------
