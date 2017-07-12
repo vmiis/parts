@@ -901,6 +901,57 @@ $('#D__ID').on('load_form_module',function(event,trigger_parameters){
 })
 //-----------------------------------------------
 $('#D__ID').on('load_quest_form_module',function(event,trigger_parameters){
+	var this_module_name=$vm.vm['__ID'].name;
+    var form_module_name=$vm.module_list[this_module_name]['form_module'];
+	if(form_module_name===undefined){
+	    var name='grid_form_quest';
+	    $vm.module_list[name]={table_id:_db_pid.toString(),url:'__BASE__/vmiis/Common-Code/grid/form_quest.html'};
+	    $vm.load_module_by_name(name,$vm.root_layout_content_slot,
+	        {   records:_records,res:_res,I:0,
+	            headerA:_headerFormA,headerB:_headerFormB,
+	            cell_render:_cell_render,
+	            widthA:_widthA,widthB:_widthB,min_widthA:_min_widthA,min_widthB:_min_widthB,
+	            before_submit:_before_submit,
+	            after_submit:_after_submit,
+	            after_change:_after_change,
+	            before_change:_before_change,
+	            cell_value_process:_cell_value_process,
+	            save_style:$('#save__ID').css('display'),
+	            app_id:_app_id,
+	            record_type:_record_type,
+	            row_data:_row_data,
+	            trigger_parameters:trigger_parameters,
+	        }
+	    );
+	}
+	else{
+		$vm.load_module_by_name(form_module_name,$vm.root_layout_content_slot,
+            {
+				//----------------
+				sys:_mobj.op.sys,
+				mobj:_mobj,
+				record:_records[0],
+				//----------------
+				records:_records,I:0,
+                headerA:_headerA,headerFormB:_headerFormB,
+                cell_render:_cell_render,
+                before_submit:_before_submit,
+                after_submit:_after_submit,
+                after_change:_after_change,
+                before_change:_before_change,
+                cell_value_process:_cell_value_process,
+                from_grid:'0',
+                grid_to_form_parameters:_grid_to_form_parameters,
+                trigger_parameters:trigger_parameters,
+                record_type:_record_type,
+                row_data:_row_data,
+            }
+        );
+	}
+})
+//-----------------------------------------------
+/*
+$('#D__ID').on('load_quest_form_module',function(event,trigger_parameters){
     var name='grid_form_quest';
     $vm.module_list[name]={table_id:_db_pid.toString(),url:'__BASE__/vmiis/Common-Code/grid/form_quest.html'};
     $vm.load_module_by_name(name,$vm.root_layout_content_slot,
@@ -927,6 +978,7 @@ $('#D__ID').on('load_quest_form_module',function(event,trigger_parameters){
         }
     );
 })
+*/
 //-----------------------------------------------
 var _mlist=$vm.module_list;
 var _mobj=$vm.vm['__ID'];
