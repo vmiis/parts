@@ -71,6 +71,7 @@ var load_module=function(name){
 		else if($vm.app_config.panels[name].config_url!=undefined){
 			//this is for panels
 			var url=$vm.app_config.panels[name].config_url;
+			if(url[0]=='/') url=$vm.hosting_path+url;
 			url+='?_v='+$vm.version+$vm.reload;
 			url=$vm.url(url);
 			console.log('loading '+url)
