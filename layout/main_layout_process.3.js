@@ -74,6 +74,7 @@ var load_module=function(name){
 			if(url[0]=='/') url=$vm.hosting_path+url;
 			url+='?_v='+$vm.version+$vm.reload;
 			url=$vm.url(url);
+			if(url[0]=='/') url=$vm.hosting_path+url;
 			console.log('loading '+url)
 			$.get(url,function(txt){
 				//here is control panel json text
