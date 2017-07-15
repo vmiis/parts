@@ -46,6 +46,7 @@ var load_module=function(name){
 			var url=$vm.app_config.modules[name].url;
 			url+='?_v='+$vm.version+$vm.reload;
 			url=$vm.url(url);
+			if(url[0]=='/') url=$vm.hosting_path+url;
 			//---------------------------
 			var module="L_0_"+name;
 			if($vm.module_list[module]==undefined){
@@ -121,7 +122,7 @@ var load_module=function(name){
 				})
 				$vm.config_list[name]=$vm.module_list[module].id;
 			},'text').fail(function() {
-				alert( "The file '"+$vm.app_config.panels[name].config_url+"' doesn't exist!" );
+				alert( "The file '"+url+"' doesn't exist!" (main_layout.process.3 125));
 			});
 		}
 	}
