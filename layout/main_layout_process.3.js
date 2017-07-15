@@ -122,7 +122,7 @@ var load_module=function(name){
 				})
 				$vm.config_list[name]=$vm.module_list[module].id;
 			},'text').fail(function() {
-				alert( "The file '"+url+"' doesn't exist!" (main_layout.process.3 125));
+				alert( "The file '"+url+"' doesn't exist! (main_layout.process.3 125)" );
 			});
 		}
 	}
