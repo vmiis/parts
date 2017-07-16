@@ -171,7 +171,9 @@ var process_click=function(li){
 }
 //------------------------------------
 var login_changed=function(){
-    $vm.user=$VmAPI.get_username();
+    if($vm.user!=$VmAPI.get_username()){
+		$vm.user='';
+	}
     if($vm.user=="" || $vm.user==null) $vm.user="guest";
     $('#sign__ID').text($vm.user);
     if($vm.user!='guest'){
