@@ -177,7 +177,7 @@ var login_changed=function(){
     if($vm.user=="" || $vm.user==null) $vm.user="guest";
     $('#sign__ID').text($vm.user);
     if($vm.user!='guest'){
-        $('#username__ID').text('Login as '+ $vm.user);
+        $('#username__ID').text('Signed as '+ $vm.user);
         $('#signin__ID').hide();
         $('#myaccount__ID').show();
         $('#signout__ID').show();
