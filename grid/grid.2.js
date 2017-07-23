@@ -463,8 +463,8 @@ var _request_data=function(){
         $('#save__ID').css('background','');
         _records=res.records;
         _res=res;
-        _json=0;
-        if(_res.json=='1') _json=1;
+        //_json=0;
+        //if(_res.json=='1') _json=1;
         if(_data_process!==''){ _data_process(); }
         _render();
 		if(_data_process_after_render!==''){ _data_process_after_render('grid'); }
