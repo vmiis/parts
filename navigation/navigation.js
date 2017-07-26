@@ -285,9 +285,11 @@ var _set_li_text=function(){
 _set_li_text();
 //---------------------------------------------
 var _check_count_where='';
-var _check_count=function($li,pid){
+var _check_count=function($li,pid,data_counting){
     var sql="select Number=count(ID) from [TABLE-"+pid+"]"+_check_count_where;
-    $VmAPI.request({data:{cmd:'query_records',sql:sql},callback:function(res){
+	var cmd='query_records';
+	if(data_counting=='2') cmd='query_records_s2_v2';
+    $VmAPI.request({data:{cmd:cmd,sql:sql},callback:function(res){
         if(res.records.length>0 && res.records[0].Number!='0'){
             var txt=$li.attr('data-li_text');
             txt=$('<div/>').html(txt).text();
@@ -321,7 +323,7 @@ $('#counting__ID').on('click',function(){
         if(data_counting!==undefined && cursor=='pointer'){
             if($vm.module_list[data_mid]!==undefined){
                 var tid=$vm.module_list[data_mid].table_id;
-                if(tid!='' && tid!='--------') _check_count($li,tid);
+                if(tid!='' && tid!='--------') _check_count($li,tid,data_counting);
             }
         }
     })
