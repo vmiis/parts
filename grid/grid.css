@@ -2,6 +2,8 @@
     background-color:#fff;
     font-size:13px;
     font-family: Helvetica, Arial, sans-serif;
+	height:100%;
+	overflow: auto;
 }
 #D__ID table{
     /*background-color:#fff;*/
