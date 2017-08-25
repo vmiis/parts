@@ -115,10 +115,12 @@ var panel=function(){
 }
 //---------------------------------------------
 $('#D__ID').on('load',function(){
+	/*
 	if(_mobj.op.name!=undefined){
 		_nav_name=_mobj.op.name;
 		_set_nav_link();
 	}
+	*/
 	if(_mobj.op.child=='1') _clear_counting();
 	if(_mobj.op.check_count_where!=undefined) _check_count_where=_mobj.op.check_count_where;
 });
