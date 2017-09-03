@@ -4,6 +4,7 @@
     font-family: Helvetica, Arial, sans-serif;
 	height:100%;
 	overflow: auto;
+	animation: vm_module_fadein 1.0s;
 }
 #D__ID table{
     /*background-color:#fff;*/
