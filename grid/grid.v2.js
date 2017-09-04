@@ -451,7 +451,9 @@ var _request_data=function(){
     if(_req==='') return;
     if(_busy_query!=='') $vm.open_dialog({name:'busy_dialog_module'});
     var mt1=new Date().getTime();
+	$('#vm_loader').show();
     $VmAPI.request({data:_req,callback:function(res){
+		$('#vm_loader').hide();
         if(_busy_query!=='') $vm.close_dialog({name:'busy_dialog_module'});
         $("#I__ID").text(res.I);
         $("#A__ID").text(res.A);
