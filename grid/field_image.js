@@ -4,7 +4,7 @@ td.data('filename_field',field);
 
 td.css('position','relative');
 td.css('padding-bottom','0');
-var html="<span></span><img  width='80' style='display:block;cursor:pointer' />"
+var html="<span></span><img  width='80' style='display:block;cursor:pointer;margin-bottom:0' />"
 
 html+="<span class=file_buttons><a title='Remove the file' class=remove_file>X<a> <a title='Choose a file' class=choose_file>&#9783;<a></span>";
 html+="<form><input type=file style='display:none'></input></form>";
