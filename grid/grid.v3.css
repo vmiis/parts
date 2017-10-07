@@ -53,8 +53,8 @@
     white-space: pre;
 }
 #grid__ID tr td:first-child{
-    padding-left:16px;
-    padding-right:16px;
+    padding-left:10px;
+    padding-right:10px;
     background-color:#EEE;
 }
 .file_button{
