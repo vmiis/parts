@@ -1,11 +1,11 @@
 <div id=toolbar__ID class="navbar navbar-default" style='margin-bottom:0px;'>
     <div class="navbar-form navbar-left">
             <span class=tool__ID>
-                <button type=button class='btn btn-primary' id=this__ID>This Month</button>
-                <button type=button class='btn btn-primary' id=previous__ID>Previous Month</button>
+                <button type=button class='btn btn-secondary' id=previous__ID><i class="fa fa-arrow-left"></i></button>
+                <button type=button class='btn btn-secondary' id=this__ID>This Month</button>
+                <button type=button class='btn btn-secondary' id=next__ID><i class="fa fa-arrow-right"></i></button>
             </span>
-            <button type=button class='btn btn-primary' id=next__ID>Next Month</button>
-            <button type=button class='btn btn-primary' id=refresh__ID>Refresh</button>
+            <button type=button class='btn btn-secondary' id=refresh__ID>Refresh</button>
             <span id=month_year__ID />
     </div>
 </div>
@@ -56,11 +56,10 @@
     .header__ID{
 	    font-weight:bold;
 	    color:#fff;
-	    background-color:#4d4d58;
+	    background-color:#868e96;
         display:table;
         width: 100%;
         text-align: center;
-        padding:5px;
         border:0px solid #000;
     }
     .row__ID{
@@ -71,6 +70,8 @@
     .col_header__ID{
 	    display:table-cell;
 	    width:14.285%;
+        border-right:1px solid #bbb;
+        padding:5px
     }
     .col__ID{
 	    display:table-cell;
